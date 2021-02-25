@@ -65,7 +65,6 @@ the things I can help you with.
 *Main* commands available:
  • /help: PM's you this message.
  • /help <module name>: PM's you info about that module.
- • /donate: information on how to donate!
  • /settings:
    • in PM: will send you your settings for all supported modules.
    • in a group: will redirect you to pm, with all that chat's settings.
@@ -215,16 +214,10 @@ def start(update: Update, context: CallbackContext):
                             text=" ⚡️ Get Started ",
                              url="https://t.me/SenkuUpdates/4")        
                        
-                     ],
-                     [
-                        InlineKeyboardButton(
-                             text=" ❤️ Source Code ",
-                             url="https://github.com/FtSasaki/SenkuRobot")
-                    
-                    ]]))
+                     ]]))
     else:
         update.effective_message.reply_text(
-            "I'm awake already!\n<b>Haven't slept since:</b> <code>{}</code>"
+            "I'm awake already!\n\n<b>Haven't slept since:</b> <code>{}</code>"
             .format(uptime),
             parse_mode=ParseMode.HTML)
 
@@ -486,37 +479,6 @@ def get_settings(update: Update, context: CallbackContext):
         send_settings(chat.id, user.id, True)
 
 
-@run_async
-def donate(update: Update, context: CallbackContext):
-    user = update.effective_message.from_user
-    chat = update.effective_chat  # type: Optional[Chat]
-    bot = context.bot
-    if chat.type == "private":
-        update.effective_message.reply_text(
-            DONATE_STRING,
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True)
-
-        if OWNER_ID != 254318997 and DONATION_LINK:
-            update.effective_message.reply_text(
-                "You can also donate to the person currently running me "
-                "[here]({})".format(DONATION_LINK),
-                parse_mode=ParseMode.MARKDOWN)
-
-    else:
-        try:
-            bot.send_message(
-                user.id,
-                DONATE_STRING,
-                parse_mode=ParseMode.MARKDOWN,
-                disable_web_page_preview=True)
-
-            update.effective_message.reply_text(
-                "I've PM'ed you about donating to my creator!")
-        except Unauthorized:
-            update.effective_message.reply_text(
-                "Contact me in PM first to get donation information.")
-
 
 def migrate_chats(update: Update, context: CallbackContext):
     msg = update.effective_message  # type: Optional[Message]
@@ -559,7 +521,6 @@ def main():
     settings_callback_handler = CallbackQueryHandler(
         settings_button, pattern=r"stngs_")
 
-    donate_handler = CommandHandler("donate", donate)
     migrate_handler = MessageHandler(Filters.status_update.migrate,
                                      migrate_chats)
 
